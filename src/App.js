@@ -5,22 +5,43 @@ import TaskForm from "./TaskForm";
 import TaskHookForm from "./TaskHookForm";
 import PeopleForm from "./PeopleForm";
 import { initialTasks, initialTeam } from "./data";
-
+import { toast } from "react-toastify";
 
 function App() {
   const [tasks, setTasks] = useState(initialTasks);
   const [team, setTeam] = useState(initialTeam);
 
   function handleTaskSubmit(yeniTask) {
-    setTasks([yeniTask, ...tasks])
+    setTasks([yeniTask, ...tasks]);
+    toast.success("basarili");
   }
 
   function handlePeopleSubmit(yeniKisi) {
-    setTeam([...team, yeniKisi])
+    setTeam([...team, yeniKisi]);
   }
 
   function handleComplete(id) {
-    console.log("tamamlama fonksiyonunu buraya yazın")
+    console.log("tamamlama fonksiyonunu buraya yazın");
+    const updatedTasks = tasks.map((item) => {
+      if (item.id === id) {
+        return {
+          ...item,
+          status: "yapıldı",
+        };
+      } else {
+        return item;
+      }
+    });
+    setTasks(updatedTasks);
+    toast.success(`${id} id'li task tamamlandı`);
+    const tasksTodo = updatedTasks.filter(
+      (item) => item.status === "yapılacak"
+    );
+    if (tasksTodo.length === 0) {
+      toast.success("Tebrikler tüm görevleri tamamladınız :)", {
+        theme: "light",
+      });
+    }
   }
 
   return (
@@ -59,7 +80,6 @@ function App() {
           </div>
         </div>
       </div>
-
     </div>
   );
 }
